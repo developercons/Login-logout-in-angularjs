@@ -1,5 +1,6 @@
 var app = angular.module('loginApp',['ngRoute']);
 
+
 app.config([ '$routeProvider', '$locationProvider',
     function($routeProvider, $locationProvider) {   
         $routeProvider
@@ -11,12 +12,7 @@ app.config([ '$routeProvider', '$locationProvider',
 		
 		.when('/dashboard',{
 		  		templateUrl : 'view/dashboard.html',
-				controller : 'dashCtrl',
-				resolve : {
-					check : function(checkAuth){
-						return checkAuth.getuserInfo();
-					}
-				}
+				controller : 'dashCtrl'
 		})
 		
 	} 
@@ -26,7 +22,7 @@ app.config([ '$routeProvider', '$locationProvider',
 app.factory("checkAuth", function($location,$rootScope){
     return {
         getuserInfo : function(){
-			if(!$rootScope.isLoggedIn){
+			if($rootScope.isLoggedIn === undefined || $rootScope.isLoggedIn === null){
 				$location.path('/');
 			}
 		}
@@ -64,12 +60,14 @@ app.controller('loginCtrl', function($scope,$location,$rootScope,$sce){
 		
 	});
 	
-	app.controller('dashCtrl', function($scope,$location,$rootScope,$http){
+	app.controller('dashCtrl', function($scope,$location,$rootScope,$http,checkAuth){		
 		
 		$rootScope.session = window.localStorage.getItem("SessionId");
 		$rootScope.userName = window.localStorage.getItem("SessionName");
 		$rootScope.isLoggedIn = window.localStorage.getItem("isLoggedIn");
 		
+		// Call checkAuth factory for cheking login details
+		$scope.check = checkAuth.getuserInfo();
 		
 		$scope.logout = function () {
 				window.localStorage.clear();
