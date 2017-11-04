@@ -5,7 +5,7 @@ AngularJS Login Controller
 
 The login function exposed by the controller calls the Authentication Service to authenticate the username and password entered into the view.
 
-app.controller('loginCtrl', function($scope,$location,$rootScope,$sce){
+	app.controller('loginCtrl', function($scope,$location,$rootScope,$sce){
 		$rootScope.isLoggedIn = false;
 		$scope.login = function(){		
 				if ($scope.loginform.$valid) {
@@ -35,3 +35,68 @@ app.controller('loginCtrl', function($scope,$location,$rootScope,$sce){
 		} 
 		
 	});
+	
+	
+AngularJS Login View
+
+The Login View contains a small form with the usual fields for emailid and password, and some validation messages.
+
+		<div class="container">
+						
+						<div class="col-md-4 col-md-offset-4 col-sm-6 col-sm-offset-3 col-xs-12">
+							<div class="login clearfix">
+								<h4>Login</h4>    
+								<form name="loginform" ng-submit="login()">
+									<div class="header header-primary text-center">
+										<div class="logo-container">
+											<img src="../assets/img/now-logo.png" alt="">
+										</div>
+									</div>
+									<div class="content">
+										<div class="input-group form-group-no-border input-lg">
+											<span class="input-group-addon">
+												<i class="fa fa-envelope"></i>
+											</span>
+											<input type="email" name="email" ng-model="email" class="form-control" placeholder="Email..."  required/>
+										</div>
+                                        <div class="alert alert-danger" ng-show="loginform.email.$dirty && loginform.email.$invalid">
+      										<span ng-show="loginform.email.$error.required">Email is required.</span>
+      										<span ng-show="loginform.email.$error.email">Invalid email address.</span>
+      									</div>
+										<div class="input-group form-group-no-border input-lg">
+											<span class="input-group-addon">
+												<i class="fa fa-lock"></i>
+											</span>
+											<input type="password" name="pass" ng-model="pass" placeholder="Password..." ng-minlength="8" ng-maxlength="15" class="form-control" required/>
+										</div>
+                                        <div class="alert alert-danger" ng-show="loginform.pass.$dirty && loginform.pass.$invalid">
+      										<span ng-show="loginform.pass.$error.required">Password is required.</span>
+                                            <span ng-if="!loginform.pass.$valid">
+                                            	<span ng-show="loginform.pass.$error.minlength">The length is too short.</span>
+                                                <span ng-show="loginform.pass.$error.maxlength">The length is too long.</span>
+                                            </span>
+      									</div>
+                                        <span class="badge" ng-bind-html="loginMessage"></span>
+									</div>
+									<div class="footer col-xs-12 text-center">
+										<button type="submit" class="btn btn-success btn-simple btn-round btn-block" ng-disabled="loginform.$invalid">Log In</button>
+									</div>
+									<div class="col-xs-12">
+										<h6 class="text-center">
+											<a href="#/forgotpass" class="link">Forgot Password?</a>
+										</h6>
+									</div>
+								</form>
+							</div>
+						</div>
+			</div>
+
+
+AngularJS App.js
+
+The part of this file related to authentication is in the run function, when the app starts it checks if there's a cookie containing user credentials meaning the user has already logged in, this is to keep the user logged in after a page refresh.
+
+On each location change there's a check to verify that the user is logged in if trying to access a restricted page, if not they're redirected to the login page.
+
+
+
